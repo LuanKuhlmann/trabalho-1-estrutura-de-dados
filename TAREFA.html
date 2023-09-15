@@ -2,11 +2,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TAREFA</title>
+    <link rel="stylesheet" type="text/css" href="./TAREFA.css">
     <script src="TAREFA.js"></script>
 </head>
 <body>
-    <h1>TAREFA</h1>
-    <div><button onclick="executar()">Executar programa</button></div>
+    <form class="register" id="form">
+        <div class="label">
+            <div>Nome</div>
+            <div>
+                <input type="Text" class="input" id="nome" />
+            </div>
+        </div>
+
+        <div class="label">
+            <div>RA</div>
+            <div>
+                <input class="input" id="ra" />
+            </div>
+        </div>
+
+        <div class="label">
+            <div>Idade</div>
+            <div>
+                <input class="input" id="idade" />
+            </div>
+        </div>
+
+        <div class="label">
+            <div>Media</div>
+            <div>
+                <input class="input" id="media" />
+            </div>
+        </div>
+        <div class="label">
+            <div class="gender-input">
+                <input type="radio" id="M" name="gender">
+                <label for="M">Masculino</label>
+            </div>
+            <div class="gender-input">
+                <input type="radio" id="F" name="gender">
+                <label for="F">Feminino</label>
+            </div>
+            <div class="gender-input">
+                <input type="radio" id="O" name="gender">
+                <label for="O">Outros</label>
+            </div>
+        </div>
+        <button class="buttonRes">Registrar</button>
+    </form>
+    <div class="list" id="list">
+        <table>
+            <thead>
+                <tr>
+                    <div class="container">
+                        <button class="button" onclick="ordemCrescente()">Cescente</button>
+                        <button class="button" onclick="ordemDecrescenteRA()">Decrescente</button>
+                        <button class="button" onclick="ordemCrescenteAprovados()">Aprovados</button>
+                    </div>
+                    <th>Name</th>
+                    <th>RA</th>
+                    <th>Age</th>
+                    <th>gender</th>
+                    <th>Grade</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody id="listBody"></tbody>
+        </table>
+    </div>
 </body>
 </html>

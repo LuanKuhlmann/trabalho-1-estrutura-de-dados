@@ -1,165 +1,202 @@
-// Cria uma array vazia
 const alunos = [];
 
-// Função para cadastrar o objeto Aluno
-function cadastrarAluno() {
+function subimite(e) {
+  e.preventDefault();
   const aluno = {};
 
-  while (true) {
-    try {
-      let nome = prompt('Digite o nome do aluno:');
-      if (!nome.match(/^[a-zA-Z\s]*$/) || nome.length < 1) {
-        throw new Error('Campo obrigatorio e o nome do aluno deve conter apenas letras.');
-      }
-      aluno.NOME = nome;
+  const nomeInput = document.getElementById('nome');
+  const raInput = document.getElementById('ra');
+  const idadeInput = document.getElementById('idade');
+  let sexoInput = null;
+  const mediaInput = document.getElementById('media');
 
+  // loop para confirmar a seleção no radio
+  const radioButtons = document.querySelectorAll('input[name="gender"]');
+  for (const radioButton of radioButtons) {
+    if (radioButton.checked) {
+      sexoInput = document.querySelector(`label[for="${radioButton.id}"]`).getAttribute('for');
       break;
-    } catch (error) {
-      alert(error.message);
     }
   }
 
-  while (true) {
-    try {
-      let ra = prompt('Digite o RA do aluno:');
-      if (isNaN(ra) || ra.length !== 13) {
-        throw new Error('Campo obrigatorio, deve conter apenas numeros e possuir 13 digitos.');
-      }
-      aluno.RA = ra;
-
-      break;
-    } catch (error) {
-      alert(error.message);
+  // validar e armazenar
+  try {
+    const nome = nomeInput.value.trim();
+    if (!nome.match(/^[a-zA-Z\s]*$/) || nome.length < 1) {
+      throw new Error('Nome do aluno deve conter apenas letras.');
     }
-  }
+    aluno.NOME = nome;
 
-  while (true) {
-    try {
-      let idade = parseInt(prompt('Digite a idade do aluno:'));
-      if (isNaN(idade) || idade < 1 || idade > 100) {
-        throw new Error('Campo obrigatorio e a idade informada precisa ser válida.');
-      }
-      aluno.IDADE = idade;
-
-      break;
-    } catch (error) {
-      alert(error.message);
+    const ra = raInput.value.trim();
+    if (isNaN(ra) || ra.length !== 13) {
+      throw new Error('RA deve conter apenas números e possuir 13 dígitos.');
     }
-  }
+    aluno.RA = ra;
 
-  while (true) {
-    try {
-      let sexo = prompt('Digite o sexo do aluno (M/F):');
-      sexo = sexo.toUpperCase()
-      if (sexo !== 'M' && sexo !== 'F') {
-        throw new Error('Campo obrigatorio e o sexo do aluno deve ser "M" para masculino ou "F" para feminino.');
-      }
-      aluno.SEXO = sexo;
-
-      break;
-    } catch (error) {
-      alert(error.message);
+    const idade = parseInt(idadeInput.value, 10);
+    if (isNaN(idade) || idade < 1 || idade > 100) {
+      throw new Error('Idade informada precisa ser válida.');
     }
-  }
+    aluno.IDADE = idade;
 
-  while (true) {
-    try {
-      let media = parseFloat(prompt('Digite a média do aluno:'));
-      if (isNaN(media) || media > 0 || media < 10) {
-        throw new Error('Campo obrigatorio e a média informada precisa ser válida.');
-      }
-      aluno.MEDIA = media;
-
-      break;
-    } catch (error) {
-      alert(error.message);
+    if (sexoInput !== 'M' && sexoInput !== 'F' && sexoInput !== 'O') {
+      throw new Error('Gênero do aluno deve ser "M" para masculino, "F" para feminino ou "O" para outros.');
     }
+    aluno.SEXO = sexoInput;
+
+    const media = parseFloat(mediaInput.value);
+    if (isNaN(media) || media < 0 || media > 10) {
+      throw new Error('Média informada precisa ser válida e estar entre 0 e 10.');
+    }
+    aluno.MEDIA = media;
+
+    aluno.RESULTADO = aluno.MEDIA >= 6 ? 'Aprovado' : 'Reprovado';
+
+    // adicionar aluno e limpar o formulario
+    alunos.push(aluno);
+    
+    show(alunos);
+
+    nomeInput.value = '';
+    raInput.value = '';
+    idadeInput.value = '';
+    // limpar a seleção de genero
+    for (const radioButton of radioButtons) {
+      radioButton.checked = false;
+    }
+    mediaInput.value = '';
+
+    alert('Aluno cadastrado com sucesso!');
+  } catch (error) {
+    alert(error.message);
   }
-
-  aluno.RESULTADO = aluno.MEDIA >= 6 ? 'Aprovado' : 'Reprovado';
-
-  alunos.push(aluno);
 }
 
-// Função para ordenar a array em ordem crescente de nomes
+
+// Ordena os alunos em ordem crescente
 function ordemCrescente() {
+  try {
+    if (alunos.length === 0) {
+      throw new Error('A lista está vazia.');
+    }
 
-  const alunosOrdenados = [...alunos].sort((a, b) => a.NOME.localeCompare(b.NOME));
-  mostrarRelatorio(alunosOrdenados);
+    const alunosTemp = [...alunos];
+    const n = alunosTemp.length;
+
+    // Variavel para gerenciar o loop
+    let swap;
+
+    // Aplicando o sort
+    do {
+      swap = false;
+      for (let i = 0; i < n - 1; i++) {
+
+        // Checando os nomes e ordenando corretamente
+        if (alunosTemp[i].NOME > alunosTemp[i + 1].NOME) {
+          const temp = alunosTemp[i];
+          alunosTemp[i] = alunosTemp[i + 1];
+          alunosTemp[i + 1] = temp;
+          swap = true;
+        }
+      }
+    } while (swap);
+
+    show(alunosTemp);
+
+  } catch (error) {
+    alert(error.message);
+  }
 }
 
-// Função para orderar a array em ordem decrescente de RA
+// Função para orderar os alunos em ordem decrescente o RA
 function ordemDecrescenteRA() {
+  try {
+    if (alunos.length === 0) {
+      throw new Error('A lista está vazia.');
+    };
 
-  const alunosOrdenados = [...alunos].sort((a, b) => b.RA.localeCompare(a.RA));
-  mostrarRelatorio(alunosOrdenados);
+    const alunosTemp = [...alunos];
+    const n = alunos.length;
+
+    // Variavel para gerenciar o loop
+    let swap;
+
+    // Aplicando o sort
+    do {
+      swap = false;
+      for (let i = 0; i < n - 1; i++) {
+
+        // Checando os RA e ordenando corretamente
+        if (alunosTemp[i].RA < alunosTemp[i + 1].RA) {
+          const temp = alunosTemp[i];
+          alunosTemp[i] = alunosTemp[i + 1];
+          alunosTemp[i + 1] = temp;
+          swap = true;
+        }
+      }
+    } while (swap);
+
+    show(alunosTemp);
+
+  } catch (error) {
+    alert(error.message);
+  }
 }
 
 // Função para ordenar os alunos aprovados em ordem crescente de nomes
 function ordemCrescenteAprovados() {
-
-  const alunosAprovados = alunos.filter((aluno) => aluno.RESULTADO === 'Aprovado');
-
-  const alunosOrdenados = [...alunosAprovados].sort((a, b) => a.NOME.localeCompare(b.NOME));
-  mostrarRelatorio(alunosOrdenados);
-}
-
-// Função para exibir a array na ordem requisitada
-function mostrarRelatorio(alunos) {
-  console.clear();
-            
-  let msg = 'Lista de alunos:\n***************************\n';
-
-  alunos.forEach((aluno, index) => {
-      msg += `Aluno ${index + 1}:\n`;
-      msg += `Nome: ${aluno.NOME}\n`;
-      msg += `RA: ${aluno.RA}\n`;
-      msg += `Idade: ${aluno.IDADE}\n`;
-      msg += `Sexo: ${aluno.SEXO}\n`;
-      msg += `Média: ${aluno.MEDIA}\n`;
-      msg += `Resultado: ${aluno.RESULTADO}\n`;
-      msg += '----------------\n';
-  });
-
-  console.log(msg);
-
-  window.alert(msg);
-}
-
-function executar() {
-
-  let op;
-
-  do {
-    let msg = 'Entre com uma das opções abaixo: \n'
-    msg +='1. Cadastrar Alunos.\n';
-    msg +='2. Relatório de Alunos em ordem crescente por Nome.\n';
-    msg +='3. Relatório de Alunos em ordem decrescente por RA.\n';
-    msg +='4. Relatório de Alunos em ordem crescente por Nome, apenas dos Aprovados.\n';
-    msg +='5. Encerre a execução do programa.';
-    alert(msg);
-    
-    op = prompt('OPÇÃO: ');
-
-    switch (op) {
-      case '1':
-        cadastrarAluno();
-        break;
-      case '2':
-        ordemCrescente();
-        break;
-      case '3':
-        ordemDecrescenteRA();
-        break;
-      case '4':
-        ordemCrescenteAprovados();
-        break;
-      case '5':
-        alert('Encerrando o programa.');
-        break;
-      default:
-        alert('Opção inválida. Tente novamente.');
+  try {
+    if (alunos.length === 0) {
+      throw new Error('A lista está vazia.');
     }
 
-  } while (op !== '5');
+    // Constroi uma array apenas com os alunos aprovados
+    const alunosAprovados = alunos.filter((aluno) => aluno.RESULTADO === 'Aprovado');
+    if (alunosAprovados.length === 0) {
+      throw new Error('Nenhum aluno aprovado na lista.');
+    }
+
+    // Variavel para gerenciar o loop
+    let swap;
+
+    // Aplicando o sort
+    do {
+      swap = false;
+      for (let i = 0; i < alunosAprovados.length - 1; i++) {
+
+        // Checando os nomes e ordenando corretamente
+        if (alunosAprovados[i].NOME > alunosAprovados[i + 1].NOME) {
+          const temp = alunosAprovados[i];
+          alunosAprovados[i] = alunosAprovados[i + 1];
+          alunosAprovados[i + 1] = temp;
+          swap = true;
+        }
+      }
+    } while (swap);
+
+    show(alunosAprovados);
+
+  } catch (error) {
+    alert(error.message);
+  }
 }
+
+function show(array) {
+  const tbody = document.getElementById('listBody');
+    if (tbody) {
+    tbody.innerHTML = array.map(user => {
+      return `<tr>
+                <td>${user.NOME}</td>
+                <td>${user.RA}</td>
+                <td>${user.IDADE}</td>
+                <td>${user.SEXO}</td>
+                <td>${user.MEDIA}</td>
+                <td>${user.RESULTADO}</td>
+              </tr>`;
+    }).join('');
+  }
+}
+
+window.addEventListener('load', () => {
+  document.getElementById('form').addEventListener('submit', subimite);
+});
