@@ -181,6 +181,7 @@ function ordemCrescenteAprovados() {
   }
 }
 
+// Função para mostrar os dados no formulario
 function show(array) {
   const tbody = document.getElementById('listBody');
     if (tbody) {
